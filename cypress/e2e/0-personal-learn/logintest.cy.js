@@ -34,4 +34,23 @@ describe("Working with input", () => {
       );
     });
   });
+  it("Should make a payment using fixture", () => {
+    cy.visit("http://zero.webappsecurity.com/login.html");
+    cy.get("#user_login").type("username");
+    cy.get("#user_password").type("password");
+    cy.get('input[name="submit"]').click();
+
+    cy.visit("http://zero.webappsecurity.com/bank/pay-bills.html");
+    cy.fixture("payment").then((payment) => {
+      const payee = payment.payee;
+      const account = payment.account;
+      const amount = payment.amount;
+      const date = payment.date;
+      const description = payment.description;
+
+      cy.makePayment(payee, account, amount, date, description);
+
+      cy.get(".alert-success").should("contain.text", "successfully submitted");
+    });
+  });
 });

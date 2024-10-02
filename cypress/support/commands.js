@@ -35,3 +35,25 @@ Cypress.Commands.add("login", (username, password) => {
 
   cy.get('input[name="submit"]').click();
 });
+
+Cypress.Commands.add("makePayment", () => {
+  cy.fixture("payment").then((payment) => {
+    // Load data from the fixture
+    // Set the payee
+    cy.get("#sp_payee").should("be.visible").select(payment.payee);
+    // Set the account
+    cy.get("#sp_account").type(payment.account);
+
+    // Set the amount
+    cy.get("#sp_amount").type(payment.amount);
+
+    // Set the payment date
+    cy.get("#sp_date").type(payment.date);
+
+    // Set the description
+    cy.get("#sp_description").type(payment.description, { force: true });
+
+    // Submit the form
+    cy.get("#pay_saved_payees").click();
+  });
+});
