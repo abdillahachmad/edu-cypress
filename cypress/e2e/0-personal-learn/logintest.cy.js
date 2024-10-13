@@ -1,5 +1,6 @@
 /// <reference types="cypress" />
-
+import Data from "../../fixtures/payment.json";
+import DataUser from "../../fixtures/user.json";
 describe("Working with input", () => {
   it("Visit the website", () => {
     cy.visit("http://zero.webappsecurity.com/login.html");
@@ -24,15 +25,14 @@ describe("Working with input", () => {
   });
   it("Should try to login", () => {
     cy.visit("http://zero.webappsecurity.com/login.html");
-    cy.fixture("user").then((user) => {
-      const username = user.username;
-      const password = user.password;
-      cy.login(username, password);
-      cy.get(".alert-error").should(
-        "contain.text",
-        "Login and/or password are wrong."
-      );
-    });
+
+    const username = DataUser.username;
+    const password = DataUser.password;
+    cy.login(username, password);
+    cy.get(".alert-error").should(
+      "contain.text",
+      "Login and/or password are wrong."
+    );
   });
   it("Should make a payment using fixture", () => {
     cy.visit("http://zero.webappsecurity.com/login.html");
@@ -41,16 +41,15 @@ describe("Working with input", () => {
     cy.get('input[name="submit"]').click();
 
     cy.visit("http://zero.webappsecurity.com/bank/pay-bills.html");
-    cy.fixture("payment").then((payment) => {
-      const payee = payment.payee;
-      const account = payment.account;
-      const amount = payment.amount;
-      const date = payment.date;
-      const description = payment.description;
 
-      cy.makePayment(payee, account, amount, date, description);
+    const payee = Data.payee;
+    const account = Data.account;
+    const amount = Data.amount;
+    const date = Data.date;
+    const description = Data.description;
 
-      cy.get(".alert-success").should("contain.text", "successfully submitted");
-    });
+    cy.makePayment(payee, account, amount, date, description);
+
+    cy.get(".alert-success").should("contain.text", "successfully submitted");
   });
 });
